@@ -22,13 +22,15 @@ import com.appgate.technicaltest.R;
 import com.appgate.technicaltest.presenter.ILoginPresenter;
 import com.appgate.technicaltest.presenter.implement.LoginPresenter;
 import com.appgate.technicaltest.services.ApiService;
+import com.appgate.technicaltest.utils.AlertMessages;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class LoginFragment extends Fragment {
     ILoginPresenter iLoginPresenter;
-
+    AlertMessages alertMessages;
     public LoginFragment(){
+        alertMessages = new AlertMessages();
         iLoginPresenter = new LoginPresenter(new ApiService());
     }
 
@@ -53,6 +55,8 @@ public class LoginFragment extends Fragment {
                     boolean isSuccess = iLoginPresenter.loginUser(email.getText().toString(),password.getText().toString());
                     if (isSuccess)
                         NavHostFragment.findNavController(LoginFragment.this).navigate(R.id.action_FirstFragment_to_SecondFragment);
+                    else
+                        alertMessages.alertView(getActivity(),"Información incorrecta");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
