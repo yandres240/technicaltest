@@ -9,29 +9,79 @@ android {
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
-
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+
+        qa {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
         }
     }
 
+    buildTypes {
+        qa {
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable true
+            resValue "string", "app_name", "Technical Test! Qa"
+            applicationIdSuffix ".qa"
+            signingConfig signingConfigs.qa
+            resValue 'string', 'url_api_service_geonames', '"http://api.geonames.org/"'
+            resValue "string", "data_base_name", "appGate_db"
+        }
+        debug {
+            resValue "string", "app_name", "Technical Test! Dev"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+            debuggable true
+            resValue 'string', 'url_api_service_geonames', '"http://api.geonames.org/"'
+            resValue "string", "data_base_name", "appGate_db"
+        }
+    }
+
+    //Compile para soportar lilipop
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0-alpha02'
+    //implementation 'com.android.support:appcompat-v7:28.0.0'
+    //implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:2.0.1'
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation 'android.arch.navigation:navigation-ui:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    //androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //implementation 'com.google.android.material:material:1.2.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    def room_version = "2.2.5"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    // optional - RxJava support for Room
+    implementation "androidx.room:room-rxjava2:$room_version"
+
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation "androidx.room:room-guava:$room_version"
+
+    // optional - Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
 }
